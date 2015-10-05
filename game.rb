@@ -1,6 +1,7 @@
 class Board
   attr_accessor :board
   attr_accessor :markers
+  attr_reader :victory_type
 
   def initialize
     @board = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
@@ -8,7 +9,9 @@ class Board
   end
 
   def display_board
-    puts "|_#{@board[0]}_|_#{@board[1]}_|_#{@board[2]}_|\n|_#{@board[3]}_|_#{@board[4]}_|_#{@board[5]}_|\n|_#{@board[6]}_|_#{@board[7]}_|_#{@board[8]}_|\n\n"
+    puts "|_#{@board[0]}_|_#{@board[1]}_|_#{@board[2]}_|\n"
+    puts "|_#{@board[3]}_|_#{@board[4]}_|_#{@board[5]}_|\n"
+    puts "|_#{@board[6]}_|_#{@board[7]}_|_#{@board[8]}_|\n\n"
   end
 
   def win?
@@ -28,15 +31,18 @@ class Board
   end
 
   def game_over?
+    @victory_type = nil
     if win?
       system "clear" or system "cls"
       puts "Game over!\n"
       display_board
+      @victory_type = "win"
       return true
     elsif tie?
       system "clear" or system "cls"
       puts "It's a tie!\n"
       display_board
+      @victory_type = "tie"
       return true
     else
     end
@@ -67,22 +73,22 @@ class Player
     end
 
     puts "What marker will this player use?"
-    tmp = gets.chomp.to_s
+    marker = gets.chomp.to_s
     while @marker == nil
-      if !tmp.match(/[^A-Za-z]/) == false
+      if !marker.match(/[^A-Za-z]/) == false
         puts "Could you select a letter instead?"
-        tmp = gets.chomp.to_s
-      elsif @board.markers.include?(tmp)
+        marker = gets.chomp.to_s
+      elsif @board.markers.include?(marker)
         puts "Shoot, that one is already taken!"
-        tmp = gets.chomp.to_s
-      elsif tmp.length > 1
+        marker = gets.chomp.to_s
+      elsif marker.length > 1
         puts "Multiple characters for a marker? Really?"
-        tmp = gets.chomp.to_s
-      elsif tmp == ""
+        marker = gets.chomp.to_s
+      elsif marker == ""
         puts "This can't go on without you. What will it be?"
-        tmp = gets.chomp.to_s
+        marker = gets.chomp.to_s
       else
-        @marker = tmp
+        @marker = marker
         @board.markers << @marker
       end
     end
@@ -193,7 +199,7 @@ class Game
       @board.display_board
       @player1.move
       if @board.game_over?
-        puts "Player 1 wins!"
+        puts "Player 1 wins!" if @board.victory_type == "win"
         break
       end
 
@@ -202,7 +208,7 @@ class Game
       @board.display_board
       @player2.move
       if @board.game_over?
-        puts "Player 2 wins!"
+        puts "Player 2 wins!" if @board.victory_type == "win"
         break
       end
     end
