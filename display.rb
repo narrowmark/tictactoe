@@ -20,11 +20,9 @@ class Display
         if !marker.match(/[^A-Za-z]/) == false
           puts "Could you select a letter instead?"
           marker = gets.chomp.to_s
-=begin
-        elsif @board.markers.include?(marker)
+        elsif player.board.markers.include?(marker)
           puts "Shoot, that one is already taken!"
           marker = gets.chomp.to_s
-=end
         elsif marker.length > 1
           puts "Multiple characters for a marker? Really?"
           marker = gets.chomp.to_s

@@ -1,11 +1,10 @@
 class Player
   include EventDispatcher
 
-  # State accessors
   attr_accessor :player_count_cb
   attr_accessor :player_type
   attr_accessor :marker
-  attr_accessor :marker_selected
+  attr_accessor :board
 
   @@player_count = 0
 

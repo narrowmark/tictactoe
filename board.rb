@@ -6,14 +6,22 @@ class Board
   attr_reader :victory_type
 
   def initialize
+    @board_side = 3
     @board = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
     @markers = Array.new
   end
 
   def display_board
-    puts "|_#{@board[0]}_|_#{@board[1]}_|_#{@board[2]}_|\n"
-    puts "|_#{@board[3]}_|_#{@board[4]}_|_#{@board[5]}_|\n"
-    puts "|_#{@board[6]}_|_#{@board[7]}_|_#{@board[8]}_|\n\n"
+    puts_row = ->(row) {
+      0.upto(@board_side-1) do |r|
+        print "|_#{@board[row * @board_side + r]}_"
+      end
+        puts "|"
+    }
+
+    0.upto(@board_side-1) do |c|
+      puts_row.call(c)
+    end
   end
 
   def win?
