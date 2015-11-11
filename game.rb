@@ -4,11 +4,13 @@ class Game
   def initialize
     @board = Board.new
     @player1 = Player.new(@board)
-    #@player2 = Player.new(@board)
-    Display.new(@player1)
+    @player2 = Player.new(@board)
 
-    #display = Display.new(@player1)
+    Display.new(@player1)
+    Display.new(@player2)
+
     @player1.get_user_info
+    @player2.get_user_info
   end
 
   def run_game

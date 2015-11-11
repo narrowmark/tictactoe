@@ -1,7 +1,7 @@
 class Display
   def initialize(player)
     player.subscribe(:player_type) {
-#      system "clear" or sysem "cls"
+      system "clear" or sysem "cls"
       puts "Is Player #{player.player_count_cb} human (y/n)?"
       player_type = gets.chomp.to_s
 

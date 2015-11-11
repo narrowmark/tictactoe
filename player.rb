@@ -21,7 +21,6 @@ class Player
   end
 
   def get_user_info
-    system "clear" or system "cls"
     notify(:player_type)
     notify(:player_marker)
 
