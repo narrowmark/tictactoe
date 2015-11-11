@@ -1,8 +1,14 @@
 class Game
+  include EventDispatcher
+
   def initialize
     @board = Board.new
     @player1 = Player.new(@board)
-    @player2 = Player.new(@board)
+    #@player2 = Player.new(@board)
+    Display.new(@player1)
+
+    #display = Display.new(@player1)
+    @player1.get_user_info
   end
 
   def run_game

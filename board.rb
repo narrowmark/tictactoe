@@ -1,4 +1,6 @@
 class Board
+  include EventDispatcher
+
   attr_accessor :board
   attr_accessor :markers
   attr_reader :victory_type

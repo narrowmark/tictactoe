@@ -1,38 +1,31 @@
 class Player
+  include EventDispatcher
+
+  # State accessors
+  attr_accessor :player_count_cb
+  attr_accessor :player_type
+  attr_accessor :marker
+  attr_accessor :marker_selected
+
   @@player_count = 0
 
   def initialize(board)
+    setup_listeners
     @@player_count += 1
+
+    @player_count_cb = @@player_count
+    @marker_selected = false
+
+    @player_type
     @board = board
+  end
 
+  def get_user_info
     system "clear" or system "cls"
-    puts "Is Player #{@@player_count} a human (y/n)?"
-    @player_type = gets.chomp.to_s
-    until @player_type.downcase == "y" or @player_type.downcase == "n"
-      puts "... Sorry, I'm a computer. I don't understand what you mean."
-      @player_type = gets.chomp.to_s
-    end
+    notify(:player_type)
+    notify(:player_marker)
 
-    puts "What marker will this player use?"
-    marker = gets.chomp.to_s
-    while @marker == nil
-      if !marker.match(/[^A-Za-z]/) == false
-        puts "Could you select a letter instead?"
-        marker = gets.chomp.to_s
-      elsif @board.markers.include?(marker)
-        puts "Shoot, that one is already taken!"
-        marker = gets.chomp.to_s
-      elsif marker.length > 1
-        puts "Multiple characters for a marker? Really?"
-        marker = gets.chomp.to_s
-      elsif marker == ""
-        puts "This can't go on without you. What will it be?"
-        marker = gets.chomp.to_s
-      else
-        @marker = marker
-        @board.markers << @marker
-      end
-    end
+    @board.markers << @marker
   end
 
   def move
