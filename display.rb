@@ -35,36 +35,6 @@ class Display
           player.marker = marker
         end
       end
-=begin
-      puts "What marker will this player use?"
-      marker = gets.chomp.to_s
-      marker_selected = false
-
-
-#      while player.marker_selected == false
-      while marker_selected == false
-        if !marker.match(/[^A-Za-z]/) == false
-          puts "Could you select a letter instead?"
-          marker = gets.chomp.to_s
-=begin
-        elsif @board.markers.include?(marker)
-          puts "Shoot, that one is already taken!"
-          player.marker = gets.chomp.to_s
-=end
-=begin
-        elsif marker.length > 1
-          puts "Multiple characters for a marker? Really?"
-          marker = gets.chomp.to_s
-        elsif marker == ""
-          puts "This can't go on without you. What will it be?"
-          marker = gets.chomp.to_s
-        else
-          marker_selected = true
-          player.marker_selected = true
-          player.marker = marker
-        end
-      end
-=end
     }
   end
 end
