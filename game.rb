@@ -2,6 +2,8 @@ class Game
   include EventDispatcher
 
   def initialize
+    setup_listeners
+
     @board = Board.new
     @player1 = Player.new(@board)
     @player2 = Player.new(@board)
@@ -15,24 +17,22 @@ class Game
   end
 
   def run_game
-    system "clear" or system "cls"
-    puts "Let's get this game started!\n"
+    notify(:start)
 
     while true
-      puts "\nPlayer 1's turn\n\n"
+      notify(:player_1_turn)
       @board.display_board
       @player1.move
       if @board.game_over?
-        puts "Player 1 wins!" if @board.victory_type == "win"
+        notify(:player_1_win) if @board.victory_type == "win"
         break
       end
 
-      system "clear" or system "cls"
-      puts "Player 2's turn\n\n"
+      notify(:player_2_turn)
       @board.display_board
       @player2.move
       if @board.game_over?
-        puts "Player 2 wins!" if @board.victory_type == "win"
+        notify(:player_2_win) if @board.victory_type == "win"
         break
       end
     end

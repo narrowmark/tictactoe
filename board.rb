@@ -57,8 +57,6 @@ class Board
       return diag_pick
     }
 
-    puts "diag_pick: #{bot_diag.call()}"
-
     0.upto(@board_size - 1) do |t|
       if get_row.call(t).uniq.length == 1 ||
          get_col.call(t).uniq.length == 1
