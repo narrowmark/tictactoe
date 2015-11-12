@@ -49,27 +49,27 @@ class Board
       return diag_pick
     }
 
-    # This one still needs some work
-=begin
     bot_diag = lambda {
       diag_pick = []
-      0.upto(@board_size - 1) do |d|
-        diag_pick << b[d * (@board_size - 1)]
+      1.upto(@board_size) do |d|
+        diag_pick << b[(@board_size - 1) * d]
       end
       return diag_pick
     }
 
     puts "diag_pick: #{bot_diag.call()}"
-=end
 
-    [b[0], b[1], b[2]].uniq.length == 1 ||
-    [b[3], b[4], b[5]].uniq.length == 1 ||
-    [b[6], b[7], b[8]].uniq.length == 1 ||
-    [b[0], b[3], b[6]].uniq.length == 1 ||
-    [b[1], b[4], b[7]].uniq.length == 1 ||
-    [b[2], b[5], b[8]].uniq.length == 1 ||
-    [b[0], b[4], b[8]].uniq.length == 1 ||
-    [b[2], b[4], b[6]].uniq.length == 1
+    0.upto(@board_size - 1) do |t|
+      if get_row.call(t).uniq.length == 1 ||
+         get_col.call(t).uniq.length == 1
+        return true
+      end
+    end
+
+    if top_diag.call().uniq.length == 1 ||
+       bot_diag.call().uniq.length == 1
+      return true
+    end
   end
 
   def tie?
