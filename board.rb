@@ -8,11 +8,14 @@ class Board
 
   def initialize(size=3)
     setup_listeners
+
     @board_size = size
     @board = []
+
     0.upto(@board_size ** 2 - 1) do |p|
       @board << p.to_s
     end
+
     @markers = Array.new
   end
 
@@ -22,22 +25,43 @@ class Board
 
   def win?
     b = @board
-    # Does not like calls to b[row * @board_size + ]
-    # 37:in `*': nil can't be coerced into Fixnum (TypeError)
-    # Figure it out later.
-=begin
-    row_pick = []
     get_row = ->(row) {
       row_pick = []
-      0.upto(@board_side-1) do |r|
-        puts "#{b[row * @board_size + r]}"
-        # row_pick << b[row * @board_size + r]
+      0.upto(@board_size - 1) do |r|
+        row_pick << b[row * @board_size + r]
       end
+      return row_pick
     }
 
-    test = get_row.call(0)
-    puts "#{test}"
+    get_col = ->(col) {
+      col_pick = []
+      0.upto(@board_size - 1) do |c|
+        col_pick << b[col + c * @board_size]
+      end
+      return col_pick
+    }
+
+    top_diag = lambda {
+      diag_pick = []
+      0.upto(@board_size - 1) do |d|
+        diag_pick << b[d * (@board_size + 1)]
+      end
+      return diag_pick
+    }
+
+    # This one still needs some work
+=begin
+    bot_diag = lambda {
+      diag_pick = []
+      0.upto(@board_size - 1) do |d|
+        diag_pick << b[d * (@board_size - 1)]
+      end
+      return diag_pick
+    }
+
+    puts "diag_pick: #{bot_diag.call()}"
 =end
+
     [b[0], b[1], b[2]].uniq.length == 1 ||
     [b[3], b[4], b[5]].uniq.length == 1 ||
     [b[6], b[7], b[8]].uniq.length == 1 ||
