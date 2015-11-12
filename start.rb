@@ -1,5 +1,6 @@
 require './event_dispatcher'
-require './display'
+require './display_board'
+require './display_player'
 require './board'
 require './player'
 require './game'

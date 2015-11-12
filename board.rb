@@ -7,26 +7,17 @@ class Board
   attr_reader :victory_type
 
   def initialize(size=3)
+    setup_listeners
     @board_size = size
     @board = []
     0.upto(@board_size ** 2 - 1) do |p|
       @board << p.to_s
     end
     @markers = Array.new
-    puts "#{@board}"
   end
 
   def display_board
-    puts_row = ->(row) {
-      0.upto(@board_size-1) do |r|
-        print "|_#{@board[row * @board_size + r]}_"
-      end
-        puts "|"
-    }
-
-    0.upto(@board_size-1) do |c|
-      puts_row.call(c)
-    end
+    notify(:display_board)
   end
 
   def win?
@@ -64,14 +55,12 @@ class Board
   def game_over?
     @victory_type = nil
     if win?
-      system "clear" or system "cls"
-      puts "Game over!\n"
+      notify(:game_over)
       display_board
       @victory_type = "win"
       return true
     elsif tie?
-      system "clear" or system "cls"
-      puts "It's a tie!\n"
+      notify(:tie)
       display_board
       @victory_type = "tie"
       return true

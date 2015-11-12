@@ -5,6 +5,7 @@ class Player
   attr_accessor :player_type
   attr_accessor :marker
   attr_accessor :board
+  attr_accessor :move_made
 
   @@player_count = 0
 
@@ -20,6 +21,8 @@ class Player
   end
 
   def get_user_info
+    # Can't decide whether to keep outer logic here or not. I can think of
+    # reasons for both.
     notify(:player_type)
     notify(:player_marker)
 
@@ -35,26 +38,7 @@ class Player
   end
 
   def human_move
-    move_made = nil
-    until move_made
-      choice = gets.chomp
-      if choice.match(/[0-8]/)
-        choice = choice.to_i
-      else
-        puts "Huh. I don't see that on the board. Maybe you should try again."
-        next
-      end
-
-      if @board[choice] != @board.markers[0] && @board[choice] != @board.markers[1]
-        @board[choice] = @marker
-        move_made = true
-        break
-      else
-        puts "That space is already taken"
-        next
-      end
-      move_made
-    end
+    notify(:make_move)
   end
 
   def computer_move
@@ -68,16 +52,16 @@ class Player
     end
 
     available_spaces.each do |as|
-      if best_move_found = winning_move?(@board, as, @board.markers[1])
-        puts "#{as} selected. Victory shall be mine!"
+      if best_move_found = winning_move?(@board, as, @board.markers[0])
+        notify(:victory, as)
         @board[as.to_i] = @marker
         break
-      elsif best_move_found = winning_move?(@board, as, @board.markers[0])
-        puts "#{as} selected. Victory shall be mine!"
+      elsif best_move_found = winning_move?(@board, as, @board.markers[1])
+        notify(:victory, as)
         @board[as.to_i] = @marker
         break
       elsif best_move_found = as == "4"
-        puts "#{as} selected for center. Did you not want this?"
+        notify(:center, as)
         @board[as.to_i] = @marker
         break
       else
@@ -92,13 +76,13 @@ class Player
       end
 
       if corner
-        puts "#{corner} selected from corners, all according to plan..."
+        notify(:corner, corner)
         best_moved_found = true
         @board[corner.to_i] = @marker
       else
         puts available_spaces & ["0", "2", "6", "8"]
         n = available_spaces.sample.to_i
-        puts "#{n} selected at random. I'll have you yet!"
+        notify(:random, n)
         @board[n] = @marker
       end
     end

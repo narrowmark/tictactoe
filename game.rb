@@ -6,8 +6,9 @@ class Game
     @player1 = Player.new(@board)
     @player2 = Player.new(@board)
 
-    Display.new(@player1)
-    Display.new(@player2)
+    DisplayPlayer.new(@player1)
+    DisplayPlayer.new(@player2)
+    DisplayBoard.new(@board)
 
     @player1.get_user_info
     @player2.get_user_info
