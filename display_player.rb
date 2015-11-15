@@ -1,37 +1,40 @@
 class DisplayPlayer
   def initialize(player)
-    # Display logic for the Player class
-    player.subscribe(:player_type) {
-      system "clear" or sysem "cls"
-      puts "Is Player #{player.player_count_cb} human (y/n)?"
-      player_type = gets.chomp.to_s
+    writer = Writer
+    reader = Reader
 
-      until player_type.downcase == "y" or player_type.downcase == "n"
-        puts "... Sorry, I'm a computer. I don't understand what you mean."
-        player_type = gets.chomp.to_s
+    player.subscribe(:player_type) {
+      writer.clear_screen
+      writer.ask_if_human(player)
+      input = reader.read_player_type
+
+      until input == "y" or input == "n"
+        writer.user_type_error
+        input = gets.chomp.to_s
       end
 
-      player.player_type = player_type
+      player.player_type = input
     }
 
     player.subscribe(:player_marker) {
-      puts "What marker will this player use?"
-      marker = gets.chomp.to_s
+      writer.ask_which_marker
+      input = reader.read_marker(player)
+
       while player.marker == nil
-        if !marker.match(/[^A-Za-z]/) == false
-          puts "Could you select a letter instead?"
-          marker = gets.chomp.to_s
-        elsif player.board.markers.include?(marker)
-          puts "Shoot, that one is already taken!"
-          marker = gets.chomp.to_s
-        elsif marker.length > 1
-          puts "Multiple characters for a marker? Really?"
-          marker = gets.chomp.to_s
-        elsif marker == ""
-          puts "This can't go on without you. What will it be?"
-          marker = gets.chomp.to_s
+        if !input.match(/[^A-Za-z]/) == false
+          writer.select_letter
+          input = reader.read_marker(player)
+        elsif player.board.markers.include?(input)
+          writer.marker_taken
+          input = reader.read_marker(player)
+        elsif input.length > 1
+          writer.too_many_chars
+          input = reader.read_marker(player)
+        elsif input == ""
+          writer.blank_marker
+          input = reader.read_marker(player)
         else
-          player.marker = marker
+          player.marker = input
         end
       end
     }
@@ -39,11 +42,12 @@ class DisplayPlayer
     player.subscribe(:make_move) {
       move_made = nil
       until move_made
-        choice = gets.chomp
+        choice = reader.read_move
+# Need to update this code to handle boards of arbitrary size.
         if choice.match(/[0-8]/)
           choice = choice.to_i
         else
-          puts "Huh. I don't see that on the board. Maybe you should try again."
+          writer.space_does_not_exist
           next
         end
 
@@ -52,53 +56,105 @@ class DisplayPlayer
           player.move_made = true
           break
         else
-          puts "That space is already taken"
+          writer.space_taken
           next
         end
       end
     }
 
     player.subscribe(:victory) do |v|
-      puts "#{v} selected. Victory shall be mine!"
+      writer.victory_taunt(v)
     end
 
     player.subscribe(:center) do |v|
-      puts "#{v} selected for center. Did you not want this?"
+      writer.center_taunt(v)
     end
 
     player.subscribe(:corner) do |c|
-      puts "#{c} selected from corners, all according to plan..."
+      writer.corner_taunt(c)
     end
 
     player.subscribe(:random) do |r|
-      puts "#{r} selected at random. I'll have you yet!"
+      writer.random_taunt(r)
+    end
+  end
+
+  class Writer
+    def self.clear_screen
+      system "clear" or system "cls"
+    end
+
+    def self.ask_if_human(player, o_stream=$stdout)
+      o_stream.puts "Is Player #{player.player_count_cb} human (y/n)?"
+    end
+
+    def self.ask_which_marker(o_stream=$stdout)
+      o_stream.puts "Which marker will this player use?"
+    end
+
+    def self.select_letter(o_stream=$stdout)
+      o_stream.puts "Could you select a letter instead?"
+    end
+
+    def self.user_type_error(o_stream=$stdout)
+      o_stream.puts "... Sorry, I'm a computer. I don't understand what you mean."
+    end
+
+    def self.select_letter(o_stream=$stdout)
+      o_stream.puts "Could you select a letter instead?"
+    end
+
+    def self.marker_taken(o_stream=$stdout)
+      o_stream.puts "Shoot, that one is already taken!"
+    end
+
+    def self.too_many_chars(o_stream=$stdout)
+      o_stream.puts "Multiple characters for a marker? Really?"
+    end
+
+    def self.blank_marker(o_stream=$stdout)
+      o_stream.puts "This can't go on without you. What will it be?"
+    end
+
+    def self.victory_taunt(pos, o_stream=$stdout)
+      o_stream.puts "#{pos} selected. Victory shall be mine!"
+    end
+
+    def self.center_taunt(pos, o_stream=$stdout)
+      o_stream.puts "#{pos} selected for center. Did you not want this?"
+    end
+
+    def self.corner_taunt(pos, o_stream=$stdout)
+      o_stream.puts "#{pos} selected from corners, all according to plan..."
+    end
+
+    def self.random_taunt(pos, o_stream=$stdout)
+      o_stream.puts "#{pos} selected at random. I'll have you yet!"
+    end
+
+    def self.space_does_not_exist(o_stream=$stdout)
+      o_stream.puts "Huh, I don't see that on the board. Maybe you should try again."
+    end
+
+    def self.space_taken(o_stream=$stdout)
+      o_stream.puts "That space is already taken!"
+    end
+  end
+
+  class Reader
+    def self.read_player_type(i_stream=$stdin)
+      input = i_stream.gets.chomp.to_s
+      input = input.downcase
+      return input
+    end
+
+    def self.read_marker(player, i_stream=$stdin)
+      input = i_stream.gets.chomp.to_s
+    end
+
+    def self.read_move(i_stream=$stdin)
+      input = i_stream.gets.chomp
+      return input
     end
   end
 end
-=begin
-class DisplayBoard
-  def initialize(board)
-    board.subscribe(:display_board) {
-      puts_row = ->(row) {
-        0.upto(board.board_size-1) do |r|
-          print "|_#{board.board[row * board.board_size + r]}_"
-        end
-          puts "|"
-      }
-
-      0.upto(board.board_size-1) do |c|
-        puts_row.call(c)
-      end
-    }
-
-    board.subscribe(:game_over) {
-      system "clear" or system "cls"
-      puts "Game over!\n"
-    }
-    board.subscribe(:tie) {
-      system "clear" or system "cls"
-      puts "It's a tie!\n"
-    }
-  end
-end
-=end

@@ -21,8 +21,6 @@ class Player
   end
 
   def get_user_info
-    # Can't decide whether to keep outer logic here or not. I can think of
-    # reasons for both.
     notify(:player_type)
     notify(:player_marker)
 
@@ -69,12 +67,18 @@ class Player
       end
     end
 
+# Something in the logic here allows the machine to occasionally select
+# position 1 even if it has already been taken. Changing the initial value of
+# corner to anything else seems to wreck havoc.
+# Simply removing the initial value of corner seems to get the job done, but
+# I want to test this more for contingency.
+# Also, corners will have different values depending on the size of the board,
+# so this needs to be changed, as well.
     if !best_move_found
-      corner = 1
+#      corner = 1
       unless (available_spaces & ["0", "2", "6", "8"]).length == 0
         corner = available_spaces.sample until corner.to_i.even?
       end
-
       if corner
         notify(:corner, corner)
         best_moved_found = true

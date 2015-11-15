@@ -1,25 +1,45 @@
 class DisplayGame
   def initialize(game)
+    writer = Writer
+
     game.subscribe(:start) {
-      system "clear" or system "cls"
-      puts "Let's get this game started!\n"
+      writer.clear_screen
+      writer.announce_start
     }
 
     game.subscribe(:player_1_turn) {
-      puts "\nPlayer 1's turn\n\n"
+      writer.turn(1)
     }
 
     game.subscribe(:player_2_turn) {
-      system "clear" or system "cls"
-      puts "\nPlayer 2's turn\n\n"
+      writer.clear_screen
+      writer.turn(2)
     }
 
     game.subscribe(:player_1_win) {
-      puts "Player 1 wins!"
+      writer.announce_win(1)
     }
 
     game.subscribe(:player_2_win) {
-      puts "Player 2 wins!"
+      writer.announce_win(2)
     }
+  end
+
+  class Writer
+    def self.clear_screen
+      system "clear" or system "cls"
+    end
+
+    def self.announce_start(o_stream=$stdout)
+      o_stream.print "Let's get this game started!\n\n"
+    end
+
+    def self.turn(player_num, o_stream=$stdout)
+      o_stream.print "\nPlayer #{player_num}'s turn\n\n\n"
+    end
+
+    def self.announce_win(player_num, o_stream=$stdout)
+      o_stream.print "\nPlayer #{player_num} wins!\n"
+    end
   end
 end
