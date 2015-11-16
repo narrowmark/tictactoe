@@ -1,4 +1,4 @@
-class Player
+class MockPlayer
   include EventDispatcher
 
   attr_accessor :player_count_cb
@@ -6,37 +6,30 @@ class Player
   attr_accessor :marker
   attr_accessor :board
 
-  @@player_count = 0
-
-  def initialize(board)
-    setup_listeners
-    @@player_count += 1
-
-    @player_count_cb = @@player_count
-    @marker_selected = false
-
+  def initialize(player_count, board)
+    @player_count_cb = player_count
     @board = board
   end
 
   def get_player_type
-    notify(:player_type)
-  end
-
-  def get_marker
-    notify(:player_marker)
-    @board.markers << @marker
-  end
-
-  def move
-    if @player_type == "y"
-      human_move
+=begin
+    if @player_count_cb == 1
+      @player_type = 'y'
     else
-      computer_move
+      @player_type = 'n'
     end
+=end
+    @player_type = 'n'
   end
 
-  def human_move
-    notify(:make_move)
+  def get_player_marker
+    if @player_count_cb == '1'
+      @marker = 'X'
+    else
+      @marker = 'O'
+    end
+
+    @board.markers << @marker
   end
 
   def computer_move
@@ -51,15 +44,12 @@ class Player
 
     available_spaces.each do |as|
       if best_move_found = winning_move?(@board, as, @board.markers[1])
-        notify(:victory, as)
         @board[as.to_i] = @marker
         break
       elsif best_move_found = winning_move?(@board, as, @board.markers[0])
-        notify(:victory, as)
         @board[as.to_i] = @marker
         break
       elsif best_move_found = as == "4"
-        notify(:center, as)
         @board[as.to_i] = @marker
         break
       else
@@ -75,12 +65,10 @@ class Player
       end
 
       if corner != 1
-        notify(:corner, corner)
         best_moved_found = true
         @board[corner.to_i] = @marker
       else
         n = available_spaces.sample.to_i
-        notify(:random, n)
         @board[n] = @marker
       end
     end

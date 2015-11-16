@@ -53,7 +53,7 @@ class DisplayPlayer
 
         if player.board[choice] != player.board.markers[0] && player.board[choice] != player.board.markers[1]
           player.board[choice] = player.marker
-          player.move_made = true
+          move_made = true
           break
         else
           writer.space_taken

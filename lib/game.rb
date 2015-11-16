@@ -12,8 +12,11 @@ class Game
     DisplayPlayer.new(@player2)
     DisplayBoard.new(@board)
 
-    @player1.get_user_info
-    @player2.get_user_info
+    @player1.get_player_type
+    @player1.get_marker
+
+    @player2.get_player_type
+    @player2.get_marker
   end
 
   def run_game
