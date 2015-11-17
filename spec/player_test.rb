@@ -113,30 +113,43 @@ class TestBoard < Test::Unit::TestCase
     end
   end
 
+  def get_row(row)
+    pick = []
+    0.upto(@size - 1) do |r|
+      pick << @board[row * @size + r]
+    end
+    return pick
+  end
+
+  def fill_test_row(row)
+    0.upto(@size - 2) do |r|
+      @board[row * @size + r] = @player1.marker
+    end
+  end
+
+  def reset_test_row(row, holder)
+    0.upto(@size - 1) do |r|
+      @board[row * @size + r] = holder[r]
+    end
+  end
+
   def test_counter_move_on_rows
     @board[4] = @player2.marker
-
-    get_row = ->(row) {
-      pick = []
-      0.upto(@size - 1) do |r|
-        pick << @board[row * @size + r]
-      end
-      return pick
-    }
-
-    row_holder = get_row.call(2)
     
-    fill_test_row = ->(row) {
-      0.upto(@size - 2) do |r|
-        @board[row * @size + r] = @player1.marker
-      end
-    }
+    0.upto(@size - 1) do |t|
+      row_holder = get_row(t)
+      fill_test_row(t)
 
-    fill_test_row.call(2)
-    @player2.computer_move
-    assert_equal @player1.marker, @board[6]
-    assert_equal @player1.marker, @board[7]
-    assert_equal @player2.marker, @board.board[8]
+      @player2.computer_move
+      test_row = get_row(t)
+
+      0.upto(test_row.length - 2) do |e|
+        assert_equal @player1.marker, test_row[e]
+      end
+      assert_equal @player2.marker, test_row[-1]
+ 
+      reset_test_row(t, row_holder)
+    end
   end
 
   def test_victory_move
