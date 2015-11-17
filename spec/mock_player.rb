@@ -1,6 +1,4 @@
 class MockPlayer
-  include EventDispatcher
-
   attr_accessor :player_count_cb
   attr_accessor :player_type
   attr_accessor :marker
@@ -23,7 +21,7 @@ class MockPlayer
   end
 
   def get_player_marker
-    if @player_count_cb == '1'
+    if @player_count_cb == 1
       @marker = 'X'
     else
       @marker = 'O'
@@ -59,8 +57,10 @@ class MockPlayer
     end
 
     if !best_move_found
+      c = @board.board_size
+      corners = ["0", (c-1).to_s, (c*(c-1)).to_s, ((c*c)-1).to_s]
       corner = 1
-      unless (available_spaces & ["0", "2", "6", "8"]).length == 0
+      unless (available_spaces & corners).length == 0
         corner = available_spaces.sample until corner.to_i.even?
       end
 

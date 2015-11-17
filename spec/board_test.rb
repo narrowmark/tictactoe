@@ -24,6 +24,13 @@ class TestInitBoard < Test::Unit::TestCase
     end
   end
 
+  def test_corners
+    assert_equal "0", @board.board[0]
+    assert_equal (@size - 1).to_s, @board.board[@size - 1]
+    assert_equal (@size * (@size - 1)).to_s, @board[@size * (@size - 1)]
+    assert_equal ((@size * @size) - 1).to_s, @board[(@size * @size) - 1]
+  end
+
   def test_first_element_is_zero
     assert_equal @size**2, @board.board.length
     assert_equal "0", @board.board[0]

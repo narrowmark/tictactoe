@@ -69,8 +69,10 @@ class Player
     end
 
     if !best_move_found
+      c = @board.board_size
+      corners = ["0", (c-1).to_s, (c*(c-1)).to_s, ((c*c)-1).to_s]
       corner = 1
-      unless (available_spaces & ["0", "2", "6", "8"]).length == 0
+      unless (available_spaces & corners).length == 0
         corner = available_spaces.sample until corner.to_i.even?
       end
 
