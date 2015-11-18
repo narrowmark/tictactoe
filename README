@@ -77,6 +77,10 @@ It is worth noting that the winning_move? method is only provided as a
 mechanism by which the computer determines a move, and that actual
 end-of-game states are handled in the Board class.
 
+event_dispatcher.rb
+Contains the EventDispatcher class, which manages the callback system between
+the classes that govern game logic and those that govern user interface.
+
 display_game.rb, display_board.rb, display_player.rb
 Contain DisplayGame, DisplayBoard, and DisplayPlayer, respectively. These
 classes were made to separate the concerns of display from the core logic of
