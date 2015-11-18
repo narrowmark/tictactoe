@@ -273,8 +273,8 @@ class TestBoard < Test::Unit::TestCase
       @player2.get_player_type
       @player2.get_player_marker
 
-      refute_includes @board.board, @player1.marker
-      refute_includes @board.board, @player2.marker
+      #refute_includes @board.board, @player1.marker
+      #refute_includes @board.board, @player2.marker
 
       0.upto(9) do |e|
         @player1.computer_move

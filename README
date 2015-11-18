@@ -1,0 +1,34 @@
+Introduction
+------------
+
+tictactoe is a console-based version of the popular two-player game Tic Tac
+Toe, written in Ruby.
+
+
+Installation
+----
+
+No installation necessary. The base game can be enjoyed by the commands:
+
+./lib
+ruby start.rb
+
+Usage
+-----
+
+The aim of tictactoe is for each player to arrange his or her respective markers
+in a contiguous line on a square grid, typically in an arrangement of 3x3
+squares, before the other.
+
+Once started, tictactoe can be played by allowing the user to determine whether
+the first player is a human or a computer, selecting the first player's marker,
+and doing the same for the second player.
+
+
+Testing
+-------
+All unit tests can be found in
+./spec
+
+Current testing can be accomplished by simply running
+ruby player_test.rb
