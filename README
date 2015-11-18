@@ -42,7 +42,7 @@ All unit tests can be found in
 
 Current testing can be accomplished by simply running the commands:
 cd ./spec
-ruby player_test.rb
+ruby test.rb
 
 
 Implementation Notes
