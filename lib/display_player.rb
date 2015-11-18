@@ -43,7 +43,6 @@ class DisplayPlayer
       move_made = nil
       until move_made
         choice = reader.read_move
-# Need to update this code to handle boards of arbitrary size.
         if choice.match(/[0-8]/)
           choice = choice.to_i
         else

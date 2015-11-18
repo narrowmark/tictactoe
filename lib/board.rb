@@ -5,12 +5,15 @@ class Board
   attr_reader :board_size
   attr_accessor :markers
   attr_reader :victory_type
+  attr_reader :center
 
   def initialize(size=3)
     setup_listeners
 
     @board_size = size
     @board = []
+
+    @center = (@board_size ** 2 / 2) if @board_size % 2 != 0 
 
     0.upto(@board_size ** 2 - 1) do |p|
       @board << p.to_s

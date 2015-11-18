@@ -65,7 +65,7 @@ class Player
         notify(:victory, as)
         @board[as.to_i] = @marker
         break
-      elsif best_move_found = as == "4"
+      elsif best_move_found = as == @board.center.to_s
         notify(:center, as)
         @board[as.to_i] = @marker
         break

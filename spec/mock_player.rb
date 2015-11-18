@@ -10,13 +10,6 @@ class MockPlayer
   end
 
   def get_player_type
-=begin
-    if @player_count_cb == 1
-      @player_type = 'y'
-    else
-      @player_type = 'n'
-    end
-=end
     @player_type = 'n'
   end
 
@@ -34,6 +27,13 @@ class MockPlayer
     available_spaces = []
     best_move_found = nil
 
+    other_marker = nil
+    if @player_count == 1
+      other_marker = @board.markers[1]
+    else
+      other_marker = @board.markers[0]
+    end
+
     @board.board.each do |s|
       if !@board.markers.include?(s)
         available_spaces << s
@@ -47,7 +47,7 @@ class MockPlayer
       elsif best_move_found = winning_move?(@board, as, @board.markers[0])
         @board[as.to_i] = @marker
         break
-      elsif best_move_found = as == "4"
+      elsif best_move_found = as == @board.center.to_s
         @board[as.to_i] = @marker
         break
       else

@@ -7,18 +7,28 @@ Toe, written in Ruby.
 
 Installation
 ----
-
 No installation necessary. The base game can be enjoyed by the commands:
 
 ./lib
 ruby start.rb
 
+
 Usage
 -----
-
 The aim of tictactoe is for each player to arrange his or her respective markers
-in a contiguous line on a square grid, typically in an arrangement of 3x3
-squares, before the other.
+in a contiguous straight line on a square grid, typically in an arrangement of
+3x3 squares, before the other. For instance, a game in which a player using the
+O marker and wins might look like this:
+
+|_O_|_O_|_O_|
+|_X_|_X_|_O_|
+|_X_|_X_|_8_|
+
+Whereas a tie game might look like this:
+
+|_X_|_O_|_X_|
+|_O_|_X_|_X_|
+|_O_|_X_|_O_|
 
 Once started, tictactoe can be played by allowing the user to determine whether
 the first player is a human or a computer, selecting the first player's marker,
@@ -30,5 +40,48 @@ Testing
 All unit tests can be found in
 ./spec
 
-Current testing can be accomplished by simply running
+Current testing can be accomplished by simply running the commands:
+cd ./spec
 ruby player_test.rb
+
+
+Implementation Notes
+--------------------
+The general structure of tictactoe is such that:
+
+start.rb
+Serves the entry point to the entire game. It brings together all of
+the necessary files, starts the game, and sets up the necessary display
+mechanism.
+
+game.rb
+Contains the Game class, which sets up instances of the board and the two
+players. Additionally, it controls when the game runs.
+
+board.rb
+Contains the Board class, which manages states of the board, such as when a
+space is empty or which player's marker occupies it. It checks to see when the
+game is over, whether one of the players won, and whether there was a tie.
+
+player.rb
+Contains the Player class, which manages states of a given player. It is used
+to determine the turn order of the game and has its own instance of a given
+player's marker. The implementation is such that the two players access a
+shared board. 
+
+Player calls methods that allow a person to determine whether a player is a
+human or the computer, as well as said player's marker. Different methods for
+making moves are called depending on whether it is a human or the computer.
+
+It is worth noting that the winning_move? method is only provided as a
+mechanism by which the computer determines a move, and that actual
+end-of-game states are handled in the Board class.
+
+display_game.rb, display_board.rb, display_player.rb
+Contain DisplayGame, DisplayBoard, and DisplayPlayer, respectively. These
+classes were made to separate the concerns of display from the core logic of
+the game. Due to the specifics of this particular implementation, specifically
+the console-based nature of this version of the game, they also handle a goodly
+amount of input logic, despite their names. Also of the mind of separating
+concerns and laying the ground for testing, they also contain Writer and Reader
+subclasses that open up standard input and output.
