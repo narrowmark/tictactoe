@@ -1,6 +1,4 @@
 class DisplayBoard
-  attr_accessor :writer
-
   def initialize(board)
     @writer = Writer
 

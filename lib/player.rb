@@ -49,12 +49,19 @@ class Player
       end
     end
 
+    other_marker = nil
+    if @player_count == 1
+      other_marker = @board.markers[1]
+    else
+      other_marker = @board.markers[0]
+    end
+
     available_spaces.each do |as|
-      if best_move_found = winning_move?(@board, as, @board.markers[1])
+      if best_move_found = winning_move?(@board, as, @marker)
         notify(:victory, as)
         @board[as.to_i] = @marker
         break
-      elsif best_move_found = winning_move?(@board, as, @board.markers[0])
+      elsif best_move_found = winning_move?(@board, as, other_marker)
         notify(:victory, as)
         @board[as.to_i] = @marker
         break
