@@ -282,4 +282,18 @@ class TestBoard < Test::Unit::TestCase
       end
     end
   end
+
+  def test_check_row
+    0.upto(@size) do |t|
+      assert_equal false, check_row(t, @player1.marker)
+      assert_equal false, check_row(t, @player2.marker)
+    end
+  end
+
+  def test_check_col
+    0.upto(@size) do |t|
+      assert_equal false, check_col(t, @player1.marker)
+      assert_equal false, check_col(t, @player2.marker)
+    end
+  end
 end

@@ -17,6 +17,9 @@ class Game
 
     @player2.get_player_type
     @player2.get_marker
+
+    @player1.get_other_marker
+    @player2.get_other_marker
   end
 
   def run_game

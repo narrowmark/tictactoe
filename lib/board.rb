@@ -26,49 +26,52 @@ class Board
     notify(:display_board)
   end
 
-  def win?
+  def get_row(row)
     b = @board
-    get_row = ->(row) {
-      row_pick = []
-      0.upto(@board_size - 1) do |r|
-        row_pick << b[row * @board_size + r]
-      end
-      return row_pick
-    }
+    row_pick = []
+    0.upto(@board_size - 1) do |r|
+      row_pick << b[row * @board_size + r]
+    end
+    return row_pick
+  end
 
-    get_col = ->(col) {
-      col_pick = []
-      0.upto(@board_size - 1) do |c|
-        col_pick << b[col + c * @board_size]
-      end
-      return col_pick
-    }
+  def get_col(col)
+    b = @board
+    col_pick = []
+    0.upto(@board_size - 1) do |c|
+      col_pick << b[col + c * @board_size]
+    end
+    return col_pick
+  end
 
-    top_diag = lambda {
-      diag_pick = []
-      0.upto(@board_size - 1) do |d|
-        diag_pick << b[d * (@board_size + 1)]
-      end
-      return diag_pick
-    }
+  def top_diag
+    b = @board
+    diag_pick = []
+    0.upto(@board_size - 1) do |d|
+      diag_pick << b[d * (@board_size + 1)]
+    end
+    return diag_pick
+  end
 
-    bot_diag = lambda {
-      diag_pick = []
-      1.upto(@board_size) do |d|
-        diag_pick << b[(@board_size - 1) * d]
-      end
-      return diag_pick
-    }
+  def bot_diag
+    b = @board
+    diag_pick = []
+    1.upto(@board_size) do |d|
+      diag_pick << b[(@board_size - 1) * d]
+    end
+    return diag_pick
+  end
 
+  def win?
     0.upto(@board_size - 1) do |t|
-      if get_row.call(t).uniq.length == 1 ||
-         get_col.call(t).uniq.length == 1
+      if get_row(t).uniq.length == 1 ||
+         get_col(t).uniq.length == 1
         return true
       end
     end
 
-    if top_diag.call().uniq.length == 1 ||
-       bot_diag.call().uniq.length == 1
+    if top_diag.uniq.length == 1 ||
+       bot_diag.uniq.length == 1
       return true
     end
   end

@@ -4,6 +4,7 @@ class Player
   attr_accessor :player_count_cb
   attr_accessor :player_type
   attr_accessor :marker
+  attr_accessor :other_marker
   attr_accessor :board
 
   @@player_count = 0
@@ -27,6 +28,16 @@ class Player
     @board.markers << @marker
   end
 
+  def get_other_marker
+    @other_marker = nil
+    if @player_count_cb == 2
+      @other_marker = @board.markers[0]
+    else
+      @other_marker = @board.markers[1]
+    end
+    puts "Board markers", @board.markers
+  end
+
   def move
     if @player_type == "y"
       human_move
@@ -47,13 +58,6 @@ class Player
       if !@board.markers.include?(s)
         available_spaces << s
       end
-    end
-
-    other_marker = nil
-    if @player_count == 1
-      other_marker = @board.markers[1]
-    else
-      other_marker = @board.markers[0]
     end
 
     available_spaces.each do |as|
@@ -79,11 +83,65 @@ class Player
       c = @board.board_size
       corners = ["0", (c-1).to_s, (c*(c-1)).to_s, ((c*c)-1).to_s]
       corner = 1
+
+      om = @other_marker
       unless (available_spaces & corners).length == 0
-        corner = available_spaces.sample until corner.to_i.even?
+        selection_made = 0
+        check_top_row = check_row(0, om)
+        check_bot_row = check_row(@board.board_size - 1, om)
+        check_left_col = check_col(0, om)
+        check_right_col = check_col(@board.board_size - 1, om)
+
+        included = ->(corner_number) {
+          return available_spaces.include?(corners[corner_number])
+        }
+
+        if check_bot_row && check_left_col
+          puts "bottom left"
+          if included.call(2)
+            corner = corners[2]
+          elsif included.call(0)
+            corner = corners[0]
+          end
+        elsif check_bot_row && check_right_col
+          puts "bottom right"
+          if included.call(3)
+            corner = corners[3]
+          elsif included.call(1)
+            corner = corners[1]
+          end
+        elsif check_top_row && check_left_col
+          puts "top left"
+          if included.call(0)
+            corner = corners[0]
+          elsif included.call(2)
+            corner = corners[2]
+          end
+        elsif check_top_row && check_right_col
+          puts "top right"
+          if included.call(1)
+            corner = corners[1]
+          elsif included.call(3)
+            corner = corners[3]
+          end
+        else
+          if check_top_row
+            top_corners = available_spaces & [corners[0], corners[1]]
+            corner = top_corners.sample
+          elsif check_bot_row
+            bot_corners = available_spaces & [corners[2], corners[3]]
+            corner = bot_corners.sample
+          elsif check_left_col
+            left_corners = available_spaces & [corners[0], corners[2]]
+            corner = left_corners.sample
+          elsif check_right_col
+            right_corners = available_spaces & [corners[1], corners[3]]
+            corner = right_corners.sample
+          end
+        end
       end
 
-      if corner != 1
+      if corner != 1 && corner != nil
         notify(:corner, corner)
         best_moved_found = true
         @board[corner.to_i] = @marker
@@ -92,6 +150,18 @@ class Player
         notify(:random, n)
         @board[n] = @marker
       end
+    end
+  end
+
+  def check_row(row, marker)
+    if @board.get_row(row).include?(marker)
+      return true
+    end
+  end
+
+  def check_col(col, marker)
+    if @board.get_col(col).include?(marker)
+      return true
     end
   end
 
