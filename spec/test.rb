@@ -285,15 +285,35 @@ class TestBoard < Test::Unit::TestCase
 
   def test_check_row
     0.upto(@size) do |t|
-      assert_equal false, check_row(t, @player1.marker)
-      assert_equal false, check_row(t, @player2.marker)
+      assert_not_equal true, @player1.check_row(t, @player1.marker)
+      assert_not_equal true, @player1.check_row(t, @player2.marker)
+    end
+  end
+
+  def test_populated_row
+    0.upto(@size - 1) do |t|
+      @board.board[t + (@size * t)] = @player1.marker
+    end
+
+    0.upto(@size - 1) do |t|
+      assert_equal true, @player1.check_row(t, @player1.marker)
+    end
+  end
+
+  def test_populated_col
+    0.upto(@size - 1) do |t|
+      @board.board[t] = @player1.marker
+    end
+
+    0.upto(@size - 1) do |t|
+      assert_equal true, @player1.check_col(t, @player1.marker)
     end
   end
 
   def test_check_col
     0.upto(@size) do |t|
-      assert_equal false, check_col(t, @player1.marker)
-      assert_equal false, check_col(t, @player2.marker)
+      assert_not_equal true, @player1.check_col(t, @player1.marker)
+      assert_not_equal true, @player1.check_col(t, @player2.marker)
     end
   end
 end

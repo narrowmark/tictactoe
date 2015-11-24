@@ -96,34 +96,22 @@ class Player
           return available_spaces.include?(corners[corner_number])
         }
 
+        pair_corners = ->(a, z) {
+          if included.call(a)
+            return corners[a]
+          elsif included.call(z)
+            return corners[z]
+          end
+        }
+
         if check_bot_row && check_left_col
-          puts "bottom left"
-          if included.call(2)
-            corner = corners[2]
-          elsif included.call(0)
-            corner = corners[0]
-          end
+          corner = pair_corners.call(2, 0)
         elsif check_bot_row && check_right_col
-          puts "bottom right"
-          if included.call(3)
-            corner = corners[3]
-          elsif included.call(1)
-            corner = corners[1]
-          end
+          corner = pair_corners.call(3, 1)
         elsif check_top_row && check_left_col
-          puts "top left"
-          if included.call(0)
-            corner = corners[0]
-          elsif included.call(2)
-            corner = corners[2]
-          end
+          corner = pair_corners.call(0, 2)
         elsif check_top_row && check_right_col
-          puts "top right"
-          if included.call(1)
-            corner = corners[1]
-          elsif included.call(3)
-            corner = corners[3]
-          end
+          corner = pair_corners.call(1, 3)
         else
           if check_top_row
             top_corners = available_spaces & [corners[0], corners[1]]
@@ -137,6 +125,8 @@ class Player
           elsif check_right_col
             right_corners = available_spaces & [corners[1], corners[3]]
             corner = right_corners.sample
+          else
+            corner = available_spaces.sample until corner.to_i.even?
           end
         end
       end
@@ -148,7 +138,7 @@ class Player
       else
         n = available_spaces.sample.to_i
         notify(:random, n)
-        @board[n] = @marker
+        @board[n.to_i] = @marker
       end
     end
   end
