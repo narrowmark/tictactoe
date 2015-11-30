@@ -72,10 +72,13 @@ class TestBoard < Test::Unit::TestCase
 
   def test_center_move
     @player1.computer_move
-    assert_equal @board.board[4], @player1.marker
+    refute_equal @board.board[4], @player1.marker
 
     @player2.computer_move
     refute_equal @board.board[4], @player2.marker
+
+    @player1.computer_move
+    assert_equal @board.board[4], @player1.marker
   end
 
   def test_corner_move
@@ -277,7 +280,38 @@ class TestBoard < Test::Unit::TestCase
         @player1.computer_move
         @player2.computer_move
         if @board.game_over?
-          assert_equal("tie", @board.victory_type, @board.board)
+          assert_equal("tie", new_board.victory_type, new_board.board)
+        end
+      end
+    end
+  end
+
+  def test_computer_vs_computer_with_noncorner_first_move
+    c = @size
+    corners = ["0", (c-1).to_s, (c*(c-1)).to_s, ((c*c)-1).to_s]
+    non_corners = []
+
+    @board.board.each do |i|
+      non_corners << i if corners.include?(i) == false
+    end
+
+    non_corners.each do |t|
+      new_board = Board.new(@size)
+      @player1 = MockPlayer.new(1, new_board)
+      @player2 = MockPlayer.new(2, new_board)
+
+      @player1.get_player_type
+      @player1.get_player_marker
+
+      @player2.get_player_type
+      @player2.get_player_marker
+
+      0.upto(8) do |e|
+        new_board[t.to_i] = @player1.marker
+        @player2.computer_move
+        @player1.computer_move
+        if @board.game_over?
+          assert_equal("win", new_board.victory_type, new_board)
         end
       end
     end
